@@ -1,0 +1,73 @@
+classdef Stack
+    %使用元胞存储数据，未优化
+   properties
+       count = 0;
+%        max_size=20;  %最大容量
+%        step_size=30;  %扩大步长
+       stack=cell(1);    %堆栈内容
+       
+       
+   end
+   
+   methods
+%        %初始化堆栈
+%        function this = init(this, size)
+%            if size > 0
+%                this.max_size = size;
+%                this.stack =cell(1,size);
+%            else
+%                error('初始化参数错误');
+%            end
+%        end
+       %扩充栈大小，不使用
+%        function this = enlarge(this)
+%            if this.step_size<=0
+%                this.step_size = 100;
+%            end
+%            this.max_size = this.max_size + this.step_size;
+%            this.stack = [this.stack,cell(1,this.step_size)];   %将新数组放置在后面
+%        end
+       %简单显示元胞
+       function displayU(this)
+           celldisp(this.stack);
+       end
+       %判断是否为空
+       function is = isempty(this)
+           if this.count == 0
+               is = true;
+           else
+               is = false;
+           end
+       end
+       %将堆栈置空
+       function this = empty(this)
+           this.count = 0;
+           this.top = 1;
+           this.stack(:,:) = [];
+           
+       end
+       %出栈
+       function [this,x] = pop(this)
+           if isempty(this)
+               x = {};
+           else
+               x = this.stack{1,this.count};
+               this.stack(:,this.count) = [];
+%                this.top = this.top - 1;
+               this.count = this.count - 1;
+           end
+       end
+       %入栈
+       function this = push(this,x)
+           this.count = this.count + 1;
+%            if this.max_size <= this.top
+%                this = enlarge(this);
+%            end
+           this.stack{1,this.count} = x;
+%            this.count = this.count + 1;
+%            this.top = this.top + this.count - 1;
+       end
+       
+               
+   end
+end
