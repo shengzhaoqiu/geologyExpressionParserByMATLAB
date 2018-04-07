@@ -1,0 +1,96 @@
+operand = Stack;
+operation = Stack;
+% a = a.push('1');
+% [a,x]=pop(a);
+global list
+global num
+list = {'Fe','Mg','Ti'};
+num = [2,3,4];
+temp = 'Mg*0.32-1';
+temp1 = '';
+for i=1:length(temp)
+    if temp(i) == '+' || temp(i) == '-' || temp(i) == '*' || temp(i) == '/' || temp(i) == '(' || temp(i) == ')'
+        temp1=[temp1,' ',temp(i),' '];
+    else
+        temp1=[temp1,temp(i)];
+    end
+end
+
+%按空格分割字符串
+expression = regexp(temp1,' ','split');
+
+for i = 1:length(expression)
+%     expression{1,i}
+    if expression{1,i} == ' '
+        continue;
+    elseif strcmp(expression{1,i}, '+') || strcmp(expression{1,i}, '-')
+        
+        while(~operation.isempty()&&(strcmp(operation.stack{operation.count},'+') || strcmp(operation.stack{operation.count},'-') || strcmp(operation.stack{operation.count},'*') || strcmp(operation.stack{operation.count},'/')))
+            [operand,operation] = processAnOperator(operand,operation);
+        end
+        operation=operation.push(expression{1,i});
+    elseif strcmp(expression{1,i},'*') || strcmp(expression{1,i},'/')
+%         ~operation.isempty()
+        while(~operation.isempty()&&(strcmp(operation.stack{operation.count},'*') || strcmp(operation.stack{operation.count},'/')))
+            [operand,operation] = processAnOperator(operand,operation);
+        end
+        operation=operation.push(expression{1,i});
+    elseif strcmp(expression{1,i},'(')
+        operation=operation.push(expression{1,i});
+    elseif strcmp(expression{1,i},')')
+        while(~strcmp(operation.stack{operation.count},'('))
+            [operand,operation] = processAnOperator(operand,operation);
+        end
+        operation = operation.pop();
+    elseif ~isnan(str2double(expression{1,i})) 
+        
+%         expression{1,i}
+        operand=operand.push(str2double(expression{1,i}));
+    elseif ismember(expression{1,i},list)
+%         expression{1,i}
+        operand=operand.push(expression{1,i});
+    end
+end
+while(~operation.isempty())
+    [operand,operation] = processAnOperator(operand,operation);
+end
+
+function [thisa,thisb] = processAnOperator(stackOprand,stackOpration)
+global list
+global num
+    [thisb,op] = stackOpration.pop();
+    [thisa,opr1] = stackOprand.pop();
+    [thisa,opr2] = thisa.pop();
+%     class(opr1)
+%     class(opr2)
+    if ischar(opr1)
+%         list
+%         opr1
+%         ismember(list,opr1)
+        opr1 = num(find(ismember(list,opr1)==1));
+    end
+    if ischar(opr2)
+        opr2
+        opr2 = num(find(ismember(list,opr2)==1));
+        opr2
+    end
+%     if isnan(str2double(opr2))
+%         opr2 = num(find(ismember(list,opr2)==1));
+%     end
+    if op == '+'
+        
+        thisa = thisa.push(opr1 + opr2);
+    elseif op == '-'
+       
+        thisa = thisa.push(opr1 - opr2);
+    elseif op == '*'
+        
+        thisa = thisa.push(opr1 * opr2);
+    elseif op == '/'
+        
+        thisa = thisa.push(opr2 / opr1);
+    end
+end
+
+
+
